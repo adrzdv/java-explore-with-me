@@ -14,20 +14,20 @@ import java.util.List;
 @EntityScan(basePackages = "ru.practicum.statsdto")
 public interface StatsRepository extends JpaRepository<HitObject, Long> {
 
-    @Query(value = "SELECT h.app AS app, h.uri AS uri, COUNT(h.ip) AS hit FROM HitObject h " +
-            "WHERE uri IN :uris AND h.timestamp BETWEEN :start AND :end GROUP BY h.app, h.uri ORDER BY hit DESC")
+    @Query(value = "SELECT h.app AS app, h.uri AS uri, COUNT(h.ip) AS hits FROM HitObject h " +
+            "WHERE uri IN :uris AND h.timestamp BETWEEN :start AND :end GROUP BY h.app, h.uri ORDER BY hits DESC")
     List<HitObjectProjection> getStatsWithUries(List<String> uris, LocalDateTime start, LocalDateTime end);
 
-    @Query(value = "SELECT h.app AS app, h.uri AS uri, COUNT(h.ip) AS hit " +
-            "FROM HitObject h WHERE h.timestamp BETWEEN :start AND :end GROUP BY h.app, h.uri ORDER BY hit DESC")
+    @Query(value = "SELECT h.app AS app, h.uri AS uri, COUNT(h.ip) AS hits " +
+            "FROM HitObject h WHERE h.timestamp BETWEEN :start AND :end GROUP BY h.app, h.uri ORDER BY hits DESC")
     List<HitObjectProjection> getStats(LocalDateTime start, LocalDateTime end);
 
-    @Query(value = "SELECT h.app AS app, h.uri AS uri, COUNT(DISTINCT h.ip) AS hit FROM HitObject h " +
-            "WHERE h.uri IN :uris AND h.timestamp BETWEEN :start AND :end GROUP BY h.app, h.uri ORDER BY hit DESC")
+    @Query(value = "SELECT h.app AS app, h.uri AS uri, COUNT(DISTINCT h.ip) AS hits FROM HitObject h " +
+            "WHERE h.uri IN :uris AND h.timestamp BETWEEN :start AND :end GROUP BY h.app, h.uri ORDER BY hits DESC")
     List<HitObjectProjection> getUniqueStatsWithUries(List<String> uris, LocalDateTime start, LocalDateTime end);
 
-    @Query(value = "SELECT h.app AS app, h.uri AS uri, COUNT(DISTINCT h.ip) AS hit FROM HitObject h " +
-            "WHERE h.timestamp BETWEEN :start AND :end GROUP BY h.app, h.uri ORDER BY hit DESC")
+    @Query(value = "SELECT h.app AS app, h.uri AS uri, COUNT(DISTINCT h.ip) AS hits FROM HitObject h " +
+            "WHERE h.timestamp BETWEEN :start AND :end GROUP BY h.app, h.uri ORDER BY hits DESC")
     List<HitObjectProjection> getUniqueStats(LocalDateTime start, LocalDateTime end);
 
 }

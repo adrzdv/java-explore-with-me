@@ -75,7 +75,7 @@ public class StatsControllerTests {
             }
 
             @Override
-            public int getHit() {
+            public int getHits() {
                 return 4;
             }
         };

@@ -10,5 +10,5 @@ public interface HitObjectProjection {
 
     String getUri();
 
-    int getHit();
+    int getHits();
 }
