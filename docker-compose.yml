@@ -8,11 +8,9 @@ services:
     depends_on:
       - stats-db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:9191/statsdb
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:9191/statsdb
       - SPRING_DATASOURCE_USERNAME=dbuser
       - SPRING_DATASOURCE_PASSWORD=12345
-    networks:
-      - localhost
 
   stats-db:
     image: postgres:16.1
@@ -30,12 +28,8 @@ services:
       timeout: 5s
       interval: 5s
       retries: 10
-    networks:
-      - localhost
 
-networks:
-  localhost:
-    driver: bridge
+
 
 #  ewm-service:
 #    ports:
