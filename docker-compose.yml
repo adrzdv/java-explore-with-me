@@ -12,7 +12,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=dbuser
       - SPRING_DATASOURCE_PASSWORD=12345
     networks:
-      - stats-network
+      - localhost
 
   stats-db:
     image: postgres:16.1
@@ -31,10 +31,10 @@ services:
       interval: 5s
       retries: 10
     networks:
-      - stats-network
+      - localhost
 
 networks:
-  stats-network:
+  localhost:
     driver: bridge
 
 #  ewm-service:
