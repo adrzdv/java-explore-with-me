@@ -41,11 +41,19 @@ public class StatsServiceImp implements StatsService {
 
         } else if (params.getUnique() != null && params.getUris() == null) {
 
-            return repository.getUniqueStats(start, end);
+            if (params.getUnique()) {
+                return repository.getUniqueStats(start, end);
+            } else {
+                return repository.getStats(start, end);
+            }
 
         } else if (params.getUris() != null) {
 
-            return repository.getUniqueStatsWithUries(params.getUris(), start, end);
+            if (params.getUnique()) {
+                return repository.getUniqueStatsWithUries(params.getUris(), start, end);
+            } else {
+                return repository.getStatsWithUries(params.getUris(), start, end);
+            }
 
         }
 
