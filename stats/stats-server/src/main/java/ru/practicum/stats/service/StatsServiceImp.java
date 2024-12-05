@@ -35,17 +35,17 @@ public class StatsServiceImp implements StatsService {
         LocalDateTime end = LocalDateTime.parse(params.getEnd().replace("\"", ""), formatter);
 
 
-        if (params.getUries() != null && params.getUnique() == null) {
+        if (params.getUris() != null && params.getUnique() == null) {
 
-            return repository.getStatsWithUries(params.getUries(), start, end);
+            return repository.getStatsWithUries(params.getUris(), start, end);
 
-        } else if (params.getUnique() != null && params.getUries() == null) {
+        } else if (params.getUnique() != null && params.getUris() == null) {
 
             return repository.getUniqueStats(start, end);
 
-        } else if (params.getUries() != null) {
+        } else if (params.getUris() != null) {
 
-            return repository.getUniqueStatsWithUries(params.getUries(), start, end);
+            return repository.getUniqueStatsWithUries(params.getUris(), start, end);
 
         }
 

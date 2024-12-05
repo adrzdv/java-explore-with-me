@@ -19,7 +19,7 @@ public class ParamObject {
 
     String start;
     String end;
-    List<String> uries;
+    List<String> uris;
     Boolean unique;
 
 }

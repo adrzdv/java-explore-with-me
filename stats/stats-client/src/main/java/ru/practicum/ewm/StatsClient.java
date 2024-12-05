@@ -47,7 +47,7 @@ public class StatsClient {
     }
 
     public <T> ResponseEntity<Object> getStats(LocalDateTime start, LocalDateTime end,
-                                               List<String> uries, Boolean unique) {
+                                               List<String> uris, Boolean unique) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedStart = start.format(formatter);
@@ -58,8 +58,8 @@ public class StatsClient {
                 .end(URLEncoder.encode(formattedEnd, StandardCharsets.UTF_8))
                 .build();
 
-        if (uries != null) {
-            params.setUries(uries);
+        if (uris != null) {
+            params.setUris(uris);
         }
 
         if (unique != null) {

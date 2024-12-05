@@ -103,7 +103,7 @@ class StatsServiceTests {
 
         assertThat(res.size(), equalTo(2));
 
-        params.setUries(List.of("/some/uri/1"));
+        params.setUris(List.of("/some/uri/1"));
 
         res = service.viewStats(params);
 
