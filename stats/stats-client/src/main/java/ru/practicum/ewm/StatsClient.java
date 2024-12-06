@@ -31,7 +31,7 @@ public class StatsClient {
         this.statsServerUri = statsServerUri;
     }
 
-    public <T> ResponseEntity<Object> hitUri(String app, String uri, String ip, LocalDateTime timestamp) {
+    public ResponseEntity<Object> hitUri(String app, String uri, String ip, LocalDateTime timestamp) {
 
         String path = statsServerUri + API_HIT_PREFIX;
 
@@ -46,8 +46,8 @@ public class StatsClient {
 
     }
 
-    public <T> ResponseEntity<Object> getStats(LocalDateTime start, LocalDateTime end,
-                                               List<String> uris, Boolean unique) {
+    public ResponseEntity<Object> getStats(LocalDateTime start, LocalDateTime end,
+                                           List<String> uris, Boolean unique) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedStart = start.format(formatter);
