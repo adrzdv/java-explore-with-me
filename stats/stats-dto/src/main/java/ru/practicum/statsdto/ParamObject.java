@@ -1,7 +1,6 @@
 package ru.practicum.statsdto;
 
 import lombok.*;
-import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
