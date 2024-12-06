@@ -14,12 +14,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ParamObject {
 
-    String start;
-    String end;
-    List<String> uris;
-    Boolean unique;
+    private String start;
+    private String end;
+    private List<String> uris;
+    private Boolean unique;
 
 }
