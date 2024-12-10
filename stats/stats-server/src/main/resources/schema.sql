@@ -6,5 +6,5 @@ CREATE TABLE IF NOT EXISTS hits(
     uri VARCHAR,
     ip VARCHAR(15),
     timestamp TIMESTAMP,
-    CONSTRAINT pk_user PRIMARY KEY (id)
+    CONSTRAINT pk_hit PRIMARY KEY (id)
 )

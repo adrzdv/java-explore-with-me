@@ -27,7 +27,6 @@ public class StatsServiceImp implements StatsService {
     }
 
     @Override
-    @Transactional
     public List<HitObjectProjection> viewStats(ParamObject params) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
