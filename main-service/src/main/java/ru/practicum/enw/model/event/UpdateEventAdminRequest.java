@@ -42,7 +42,6 @@ public class UpdateEventAdminRequest {
     private Boolean paid;
     @Nullable
     @Min(value = 0, message = "Error: Participant limit must be positive. Value: ${validatedValue}")
-    @Positive(message = "Error: Participant limit must be positive")
     private Integer participantLimit;
     @Nullable
     private Boolean requestModeration;

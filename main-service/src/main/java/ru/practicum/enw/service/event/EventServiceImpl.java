@@ -135,6 +135,12 @@ public class EventServiceImpl implements EventService {
             }
         }
 
+        if (updEvent.getParticipantLimit() != null) {
+            if (updEvent.getParticipantLimit() < 0) {
+                throw new ConflictCustomException("Participant limit must be positive value");
+            }
+        }
+
         Event event = eventRepo.findEventByIdAndInitiatorId(idEvent, idUser);
         Category category;
 
@@ -190,6 +196,12 @@ public class EventServiceImpl implements EventService {
 
         if (event == null) {
             return EventMapper.fromEntityToEventFullDto(eventOld);
+        }
+
+        if (event.getParticipantLimit() != null) {
+            if (event.getParticipantLimit() < 0) {
+                throw new ConflictCustomException("Participant limit must be positive value");
+            }
         }
 
         if (!eventOld.getEventDate().isAfter(LocalDateTime.now().plusHours(1L))) {
