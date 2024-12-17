@@ -38,7 +38,7 @@ public class EventAdminController {
     @PatchMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public EventFullDto modifyEventById(@PathVariable long id,
-                                        @Valid @RequestBody UpdateEventAdminRequest event) throws NotFoundCustomException {
+                                        @Valid @RequestBody(required = false) UpdateEventAdminRequest event) throws NotFoundCustomException {
 
         return eventService.updateEventByAdmin(id, event);
 

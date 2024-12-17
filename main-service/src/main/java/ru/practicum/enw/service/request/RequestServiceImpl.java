@@ -57,7 +57,7 @@ public class RequestServiceImpl implements RequestService {
         }
         if (event.getParticipantLimit() != 0) {
             if (event.getConfirmedRequests() + 1 > event.getParticipantLimit()) {
-                throw new BadRequestCustomException("Limit of participants is over");
+                throw new ConflictCustomException("Limit of participants is over");
             }
         }
 

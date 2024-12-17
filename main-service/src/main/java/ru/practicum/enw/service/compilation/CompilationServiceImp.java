@@ -78,6 +78,7 @@ public class CompilationServiceImp implements CompilationService {
 
     @Override
     public List<CompilationDto> getCompilations(Boolean pinned, int size, int from) {
+
         return compilationRepo.getCompilationsByParams(pinned, size, from).stream()
                 .map(CompilationMapper::fromEntityToDto)
                 .toList();

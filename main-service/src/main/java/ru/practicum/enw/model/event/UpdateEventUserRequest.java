@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,7 +38,6 @@ public class UpdateEventUserRequest {
     private Boolean paid;
     @Nullable
     @Min(value = 0, message = "Error: Participant limit must be positive. Value: ${validatedValue}")
-    @Positive(message = "Error: Participant limit must be positive")
     private Integer participantLimit;
     @Nullable
     private Boolean requestModeration;

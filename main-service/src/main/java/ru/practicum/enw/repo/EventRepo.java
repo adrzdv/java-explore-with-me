@@ -19,11 +19,19 @@ public interface EventRepo extends JpaRepository<Event, Long> {
             "(:users IS NULL OR e.initiator IN (SELECT u FROM User AS u WHERE u.id IN :users)) " +
             "AND (:states IS NULL OR e.state IN :states) " +
             "AND (:categories IS NULL OR e.category IN (SELECT c FROM Category AS c WHERE c.id IN :categories)) " +
-            "AND e.eventDate BETWEEN :rangeStart AND :rangeEnd " +
+            "AND (e.eventDate BETWEEN :rangeStart AND :rangeEnd) " +
             "ORDER BY e.views DESC LIMIT :size OFFSET :from")
     List<Event> findAllEventsForAdminHavingParams(List<Long> users, List<String> states, List<Long> categories,
                                                   LocalDateTime rangeStart, LocalDateTime rangeEnd, int from,
                                                   int size);
+
+    @Query("SELECT e FROM Event AS e WHERE " +
+            "(:users IS NULL OR e.initiator IN (SELECT u FROM User AS u WHERE u.id IN :users)) " +
+            "AND (:states IS NULL OR e.state IN :states) " +
+            "AND (:categories IS NULL OR e.category IN (SELECT c FROM Category AS c WHERE c.id IN :categories)) " +
+            "ORDER BY e.views DESC LIMIT :size OFFSET :from")
+    List<Event> findAllEventsForAdminHavingParamsWithoutDates(List<Long> users, List<String> states, List<Long> categories,
+                                                              int from, int size);
 
     @Query("SELECT e FROM Event AS e WHERE" +
             "(:text IS NULL OR (e.annotation ILIKE %:text% OR e.description ILIKE %:text%)) " +

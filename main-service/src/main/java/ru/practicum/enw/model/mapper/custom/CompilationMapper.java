@@ -10,7 +10,7 @@ public class CompilationMapper {
                 .id(compilation.getId())
                 .title(compilation.getTitle())
                 .pinned(compilation.getPinned())
-                .events(compilation.getEvents() != null ? compilation.getEvents().stream()
+                .events(!compilation.getEvents().isEmpty() ? compilation.getEvents().stream()
                         .map(EventMapper::toShortDto)
                         .toList() : null)
                 .build();

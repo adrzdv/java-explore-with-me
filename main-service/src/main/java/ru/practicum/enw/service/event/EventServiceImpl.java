@@ -73,6 +73,12 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundCustomException("User with id=" + id + " not found");
         }
 
+        if (event.getParticipantLimit() != null) {
+            if (event.getParticipantLimit() < 0) {
+                throw new ConflictCustomException("Participant limit must be positive value");
+            }
+        }
+
         if (LocalDateTime.parse(event.getEventDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                 .isBefore(LocalDateTime.now())) {
             throw new BadRequestCustomException("Date can't be in the past");
@@ -158,16 +164,18 @@ public class EventServiceImpl implements EventService {
                 updEvent.setLocation(location);
             } else {
                 updEvent.setLocation(event.getLocation());
-                eventMapperMapStruct.updateFullEventDtoFromNewEventDto(updEvent, event);
             }
         }
 
-        if (updEvent.getStateAction().equals(CANCEL_REVIEW.name())) {
-            event.setState(CANCELED.name());
-        } else {
-            event.setState(PENDING.name());
+        if (updEvent.getStateAction() != null) {
+            if (updEvent.getStateAction().equals(CANCEL_REVIEW.name())) {
+                event.setState(CANCELED.name());
+            } else {
+                event.setState(PENDING.name());
+            }
         }
 
+        eventMapperMapStruct.updateFullEventDtoFromNewEventDto(updEvent, event);
         event.setCategory(category);
 
         return EventMapper.fromEntityToEventFullDto(eventRepo.save(event));
@@ -179,6 +187,10 @@ public class EventServiceImpl implements EventService {
 
         Event eventOld = eventRepo.findById(id)
                 .orElseThrow(() -> new NotFoundCustomException("Event with id=" + id + " not found"));
+
+        if (event == null) {
+            return EventMapper.fromEntityToEventFullDto(eventOld);
+        }
 
         if (!eventOld.getEventDate().isAfter(LocalDateTime.now().plusHours(1L))) {
             throw new ConflictCustomException("The start date of the updated event must " +
@@ -220,6 +232,12 @@ public class EventServiceImpl implements EventService {
     public List<EventFullDto> getAdminAllEvents(List<Long> users, List<String> states, List<Long> categories,
                                                 LocalDateTime rangeStart,
                                                 LocalDateTime rangeEnd, int from, int size) {
+
+        if (rangeStart == null || rangeEnd == null) {
+            return eventRepo.findAllEventsForAdminHavingParamsWithoutDates(users, states, categories, from, size).stream()
+                    .map(EventMapper::fromEntityToEventFullDto)
+                    .toList();
+        }
 
         return eventRepo.findAllEventsForAdminHavingParams(users, states, categories, rangeStart, rangeEnd, from, size).stream()
                 .map(EventMapper::fromEntityToEventFullDto)
@@ -284,7 +302,7 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new NotFoundCustomException("Event with id=" + idEvent + " not found"));
 
         if (!event.getState().equals(PUBLISHED.name())) {
-            throw new BadRequestCustomException("Event must be published");
+            throw new NotFoundCustomException("Event must be published");
         }
 
         event.setViews(convertedBody.getFirst().getHits());
