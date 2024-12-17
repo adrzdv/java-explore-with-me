@@ -1,5 +1,6 @@
 package ru.practicum.enw.controller.admin;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,8 @@ public class CompilationAdminController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CompilationDto addCompilation(@RequestBody NewCompilationDto compilation) throws NotFoundCustomException {
+    public CompilationDto addCompilation(@Valid @RequestBody NewCompilationDto compilation)
+            throws NotFoundCustomException {
 
         return compilationService.addNew(compilation);
     }
@@ -34,7 +36,8 @@ public class CompilationAdminController {
     @PatchMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public CompilationDto updateCompilation(@PathVariable long id,
-                                            @RequestBody UpdateCompilationRequest compilation) throws NotFoundCustomException {
+                                            @Valid @RequestBody UpdateCompilationRequest compilation)
+            throws NotFoundCustomException {
 
         return compilationService.update(id, compilation);
     }

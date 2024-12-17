@@ -3,6 +3,7 @@ package ru.practicum.enw.controller.admin;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -37,7 +38,7 @@ public class EventAdminController {
     @PatchMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public EventFullDto modifyEventById(@PathVariable long id,
-                                        @RequestBody UpdateEventAdminRequest event) throws NotFoundCustomException {
+                                        @Valid @RequestBody UpdateEventAdminRequest event) throws NotFoundCustomException {
 
         return eventService.updateEventByAdmin(id, event);
 

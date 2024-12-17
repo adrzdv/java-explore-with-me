@@ -26,7 +26,7 @@ public class CategoriesAdminController {
     @PatchMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     CategoryDto update(@PathVariable long id,
-                       @RequestBody NewCategoryDto newCategoryDto) throws NotFoundCustomException {
+                       @Valid @RequestBody NewCategoryDto newCategoryDto) throws NotFoundCustomException {
 
         return service.update(id, newCategoryDto);
     }

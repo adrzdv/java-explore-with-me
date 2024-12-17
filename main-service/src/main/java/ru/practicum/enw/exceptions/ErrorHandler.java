@@ -88,9 +88,9 @@ public class ErrorHandler {
 
     @ExceptionHandler(ConflictCustomException.class)
     public ResponseEntity<Object> conflictCustomException(ConflictCustomException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorCustomException(HttpStatus.BAD_REQUEST.name(),
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorCustomException(HttpStatus.CONFLICT.name(),
                 e.getMessage(),
-                BAD_REQUEST,
+                CONFLICT,
                 LocalDateTime.now()));
     }
 

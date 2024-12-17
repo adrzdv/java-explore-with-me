@@ -32,7 +32,7 @@ public interface UserService {
      * @param size list size of output list
      * @return
      */
-    List<UserDto> get(List<Integer> ids, Integer from, Integer size);
+    List<UserDto> get(List<Long> ids, Integer from, Integer size);
 
     /**
      * Get a User by ID

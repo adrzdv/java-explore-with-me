@@ -15,6 +15,7 @@ import ru.practicum.enw.model.mapper.mapstruct.CompilationMapperMapStruct;
 import ru.practicum.enw.repo.CompilationRepo;
 import ru.practicum.enw.repo.EventRepo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,16 +30,19 @@ public class CompilationServiceImp implements CompilationService {
     @Transactional
     public CompilationDto addNew(NewCompilationDto newCompilation) throws ConflictCustomException {
 
-        List<Event> events = eventRepo.findByIdIn(newCompilation.getEvents());
+        List<Event> events = new ArrayList<>();
 
-        if (events.isEmpty()) {
-            throw new ConflictCustomException("One or all events in list not found");
+        if (!newCompilation.getEvents().isEmpty()) {
+            events = eventRepo.findByIdIn(newCompilation.getEvents());
+            if (events.isEmpty()) {
+                throw new ConflictCustomException("One or all events in list not found");
+            }
         }
 
         Compilation compilation = Compilation.builder()
                 .title(newCompilation.getTitle())
-                .pinned(newCompilation.getPinned())
-                .events(events)
+                .pinned(newCompilation.getPinned() != null ? newCompilation.getPinned() : false)
+                .events(events.isEmpty() ? null : events)
                 .build();
 
         return CompilationMapper.fromEntityToDto(compilationRepo.save(compilation));

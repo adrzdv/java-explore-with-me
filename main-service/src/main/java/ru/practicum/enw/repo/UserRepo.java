@@ -11,15 +11,8 @@ import java.util.List;
 public interface UserRepo extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User AS u " +
-            "WHERE id IN :ids ORDER BY u.id")
-    List<User> getUsersWithIds(List<Integer> ids);
-
-    @Query("SELECT u FROM User AS u " +
+            "WHERE (:ids IS NULL OR u.id IN :ids) " +
             "ORDER BY u.id LIMIT :size OFFSET :from")
-    List<User> getUsersWithLimit(int from, int size);
-
-    @Query("SELECT u FROM User AS u " +
-            "WHERE id IN :ids ORDER BY u.id LIMIT :size OFFSET :from")
-    List<User> getUsersWithIdsAndLimit(List<Integer> ids, int from, int size);
+    List<User> getUsersHavingParams(List<Long> ids, int from, int size);
 
 }

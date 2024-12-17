@@ -26,7 +26,7 @@ public interface EventRepo extends JpaRepository<Event, Long> {
                                                   int size);
 
     @Query("SELECT e FROM Event AS e WHERE" +
-            "(:text IS NULL OR e.annotation ILIKE %:text% AND e.description ILIKE %:text%) " +
+            "(:text IS NULL OR (e.annotation ILIKE %:text% OR e.description ILIKE %:text%)) " +
             "AND (:categories IS NULL OR e.category IN (SELECT c FROM Category AS c WHERE c.id IN :categories)) " +
             "AND (:paid IS NULL OR e.paid = :paid) " +
             "AND (:isAvailable = false OR e.participantLimit > e.confirmedRequests) " +
@@ -34,15 +34,14 @@ public interface EventRepo extends JpaRepository<Event, Long> {
             "AND e.eventDate BETWEEN :rangeStart AND :rangeEnd " +
             "ORDER BY " +
             "CASE WHEN :sort = 'EVENT_DATE' THEN e.eventDate END ASC, " +
-            "CASE WHEN :sort = 'VIEWS' THEN e.views END DESC, " +
-            "CASE WHEN :sort IS NULL THEN e.id END ASC " +
+            "CASE WHEN :sort = 'VIEWS' THEN e.views END DESC " +
             "LIMIT :size OFFSET :from")
     List<Event> getAllEventsByFiltersForPublic(String text, List<Integer> categories, Boolean paid, Boolean isAvailable,
                                                String sort, LocalDateTime rangeStart, LocalDateTime rangeEnd,
                                                int from, int size);
 
     @Query("SELECT e FROM Event AS e WHERE" +
-            "(:text IS NULL OR (e.annotation ILIKE %:text% AND e.description ILIKE %:text%)) " +
+            "(:text IS NULL OR (e.annotation ILIKE %:text% OR e.description ILIKE %:text%)) " +
             "AND (:categories IS NULL OR e.category IN (SELECT c FROM Category AS c WHERE c.id IN :categories)) " +
             "AND (:paid IS NULL OR e.paid = :paid) " +
             "AND (:isAvailable = false OR e.participantLimit > e.confirmedRequests) " +
@@ -50,8 +49,7 @@ public interface EventRepo extends JpaRepository<Event, Long> {
             "AND e.eventDate > :now " +
             "ORDER BY " +
             "CASE WHEN :sort = 'EVENT_DATE' THEN e.eventDate END ASC, " +
-            "CASE WHEN :sort = 'VIEWS' THEN e.views END DESC, " +
-            "CASE WHEN :sort IS NULL THEN e.id END ASC " +
+            "CASE WHEN :sort = 'VIEWS' THEN e.views END DESC " +
             "LIMIT :size OFFSET :from")
     List<Event> getAllEventsFromCurrentDate(String text, List<Integer> categories, Boolean paid, Boolean isAvailable,
                                             String sort, LocalDateTime now, int from, int size);

@@ -12,11 +12,11 @@ import lombok.Setter;
 @Setter
 public class NewUserRequest {
     @NotBlank(message = "Error: must not be blank. Value: ${validatedValue}")
-    @Size(message = "Error: length must be between 6 and 254 characters. Value: ${validatedValue}", min = 6, max = 254)
+    @Size(message = "Error: length must be between 2 and 250 characters. Value: ${validatedValue}", min = 2, max = 250)
     private String name;
     @NotBlank(message = "Error: must not be blank. Value: ${validatedValue}")
     @Email(message = "Error: email has invalid format. Value: ${validatedValue}",
             regexp = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")
-    @Size(message = "Error: length must be between 2 and 250 characters", min = 2, max = 250)
+    @Size(message = "Error: length must be between 6 and 254 characters", min = 6, max = 254)
     private String email;
 }

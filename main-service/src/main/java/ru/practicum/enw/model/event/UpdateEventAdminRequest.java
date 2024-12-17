@@ -3,8 +3,7 @@ package ru.practicum.enw.model.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,12 +34,15 @@ public class UpdateEventAdminRequest {
     private Long category;
     @Nullable
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Future
     private LocalDateTime eventDate;
     @Nullable
     private LocationEwm location;
     @Nullable
     private Boolean paid;
     @Nullable
+    @Min(value = 0, message = "Error: Participant limit must be positive. Value: ${validatedValue}")
+    @Positive(message = "Error: Participant limit must be positive")
     private Integer participantLimit;
     @Nullable
     private Boolean requestModeration;

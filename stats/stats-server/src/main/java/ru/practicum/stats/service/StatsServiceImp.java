@@ -4,10 +4,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.statsdto.HitObject;
+import ru.practicum.statsdto.HitObjectDto;
 import ru.practicum.statsdto.HitObjectProjection;
 import ru.practicum.statsdto.ParamObject;
 import ru.practicum.stats.repo.StatsRepository;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -27,36 +30,69 @@ public class StatsServiceImp implements StatsService {
     }
 
     @Override
-    public List<HitObjectProjection> viewStats(ParamObject params) {
+    public List<HitObjectDto> viewStats(ParamObject params) {
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime start = LocalDateTime.parse(params.getStart().replace("\"", ""), formatter);
-        LocalDateTime end = LocalDateTime.parse(params.getEnd().replace("\"", ""), formatter);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
+        String decodedStart = URLDecoder.decode(params.getStart(), StandardCharsets.UTF_8);
+        String decodedEnd = URLDecoder.decode(params.getEnd(), StandardCharsets.UTF_8);
+
+        LocalDateTime start = LocalDateTime.parse(decodedStart, formatter);
+        LocalDateTime end = LocalDateTime.parse(decodedEnd, formatter);
+//        LocalDateTime start = LocalDateTime.parse(params.getStart(), formatter);
+//        LocalDateTime end = LocalDateTime.parse(params.getEnd(), formatter);
+        List<HitObjectDto> res;
+        List<HitObjectProjection> temp;
 
         if (params.getUris() != null && params.getUnique() == null) {
 
-            return repository.getStatsWithUries(params.getUris(), start, end);
+            temp = repository.getStatsWithUries(params.getUris(), start, end);
+            return temp.stream().map(StatsServiceImp::fromProjectionToDto).toList();
+
+            //return repository.getStatsWithUries(params.getUris(), start, end);
 
         } else if (params.getUnique() != null && params.getUris() == null) {
 
             if (params.getUnique()) {
-                return repository.getUniqueStats(start, end);
+
+                temp = repository.getUniqueStats(start, end);
+                return temp.stream().map(StatsServiceImp::fromProjectionToDto).toList();
+
+                //return repository.getUniqueStats(start, end);
             } else {
-                return repository.getStats(start, end);
+
+                temp = repository.getStats(start, end);
+                return temp.stream().map(StatsServiceImp::fromProjectionToDto).toList();
+
+                //return repository.getStats(start, end);
             }
 
         } else if (params.getUris() != null) {
 
             if (params.getUnique()) {
-                return repository.getUniqueStatsWithUries(params.getUris(), start, end);
+
+                temp = repository.getUniqueStatsWithUries(params.getUris(), start, end);
+                return temp.stream().map(StatsServiceImp::fromProjectionToDto).toList();
+
+                //return repository.getUniqueStatsWithUries(params.getUris(), start, end);
             } else {
-                return repository.getStatsWithUries(params.getUris(), start, end);
+
+                temp = repository.getStatsWithUries(params.getUris(), start, end);
+                return temp.stream().map(StatsServiceImp::fromProjectionToDto).toList();
+
+                //return repository.getStatsWithUries(params.getUris(), start, end);
             }
 
         }
 
-        return repository.getStats(start, end);
+        temp = repository.getStats(start, end);
+        return temp.stream().map(StatsServiceImp::fromProjectionToDto).toList();
+
+        //return repository.getStats(start, end);
+    }
+
+    private static HitObjectDto fromProjectionToDto(HitObjectProjection projection) {
+        return new HitObjectDto(projection.getApp(), projection.getUri(), projection.getHits());
     }
 
 }

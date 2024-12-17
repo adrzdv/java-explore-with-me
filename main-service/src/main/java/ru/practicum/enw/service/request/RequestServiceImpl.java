@@ -20,6 +20,7 @@ import ru.practicum.enw.repo.EventRepo;
 import ru.practicum.enw.service.user.UserService;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -68,8 +69,12 @@ public class RequestServiceImpl implements RequestService {
         request.setCreated(LocalDateTime.now());
 
         if (!event.getRequestModeration()) {
-            request.setStatus(RequestStatus.ACCEPTED.name());
-            event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+            if (event.getParticipantLimit() == 0) {
+                request.setStatus(RequestStatus.CONFIRMED.name());
+            } else {
+                request.setStatus(RequestStatus.CONFIRMED.name());
+                event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+            }
             eventRepo.save(event);
         } else {
             request.setStatus(RequestStatus.PENDING.name());
@@ -104,7 +109,7 @@ public class RequestServiceImpl implements RequestService {
         if (!(request.getRequester() == idUser)) {
             throw new BadRequestCustomException("User is not an owner of request");
         }
-        if (request.getStatus().equals(RequestStatus.ACCEPTED.name())) {
+        if (request.getStatus().equals(RequestStatus.CONFIRMED.name())) {
             request.setStatus(RequestStatus.CANCELED.name());
             Event event = eventRepo.findById(request.getEvent())
                     .orElseThrow(() -> new NotFoundCustomException("Event with id=" + request.getEvent() + " not found"));
@@ -153,7 +158,8 @@ public class RequestServiceImpl implements RequestService {
             throw new ConflictCustomException("The participant limit has been reached");
         }
 
-        List<ParticipationRequestDto> requestsListForUpdate = requestRepo.findCurrentRequests(statusUpdater.getRequestIds())
+        List<ParticipationRequestDto> requestsListForUpdate = requestRepo
+                .findCurrentRequests(statusUpdater.getRequestIds())
                 .stream()
                 .map(RequestMapper::fromEntityToDto)
                 .toList();
@@ -170,27 +176,36 @@ public class RequestServiceImpl implements RequestService {
         List<ParticipationRequestDto> rejectedList;
         List<ParticipationRequestDto> confirmedList;
 
-        int i = 0;
-        while (i < requestsListForUpdate.size()) {
-
-            if (i > slot) {
-                requestsListForUpdate.get(i).setStatus(RequestStatus.REJECTED.name());
+        if (statusUpdater.getStatus().equals(RequestStatus.REJECTED.name())) {
+            for (ParticipationRequestDto request : requestsListForUpdate) {
+                request.setStatus(RequestStatus.REJECTED.name());
             }
-            requestsListForUpdate.get(i).setStatus(RequestStatus.CONFIRMED.name());
-            event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+            rejectedList = new ArrayList<>(requestsListForUpdate);
+            confirmedList = null;
+        } else {
+            int i = 0;
+            while (i < requestsListForUpdate.size()) {
 
-            i++;
+                if (i > slot) {
+                    requestsListForUpdate.get(i).setStatus(RequestStatus.REJECTED.name());
+                }
+
+                requestsListForUpdate.get(i).setStatus(RequestStatus.CONFIRMED.name());
+                event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+
+                i++;
+            }
+
+            confirmedList = requestsListForUpdate
+                    .stream()
+                    .filter(requestDto -> requestDto.getStatus().equals(RequestStatus.CONFIRMED.name()))
+                    .toList();
+
+            rejectedList = requestsListForUpdate
+                    .stream()
+                    .filter(requestDto -> requestDto.getStatus().equals(RequestStatus.REJECTED.name()))
+                    .toList();
         }
-
-        confirmedList = requestsListForUpdate
-                .stream()
-                .filter(requestDto -> requestDto.getStatus().equals(RequestStatus.CONFIRMED.name()))
-                .toList();
-
-        rejectedList = requestsListForUpdate
-                .stream()
-                .filter(requestDto -> requestDto.getStatus().equals(RequestStatus.REJECTED.name()))
-                .toList();
 
         requestRepo.saveAll(requestsListForUpdate.stream().map(RequestMapper::fromDtoToEntity).toList());
         eventRepo.save(event);

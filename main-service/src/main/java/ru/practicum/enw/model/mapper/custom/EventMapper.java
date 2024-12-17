@@ -26,9 +26,11 @@ public class EventMapper {
         event.setEventDate(eventDate);
         event.setInitiator(UserMapper.fromDtoToEntity(user));
         event.setLocation(newEvent.getLocation());
-        event.setPaid(newEvent.getPaid());
-        event.setParticipantLimit(newEvent.getParticipantLimit());
-        event.setRequestModeration(newEvent.getRequestModeration());
+        event.setPaid(newEvent.getPaid() != null ? newEvent.getPaid() : event.getPaid());
+        event.setParticipantLimit(newEvent.getParticipantLimit() != null ?
+                newEvent.getParticipantLimit() : event.getParticipantLimit());
+        event.setRequestModeration(newEvent.getRequestModeration() != null ?
+                newEvent.getRequestModeration() : event.getRequestModeration());
 
         return event;
     }
@@ -44,7 +46,7 @@ public class EventMapper {
                 .eventDate(event.getEventDate())
                 .initiator(UserMapper.fromEntityToShortDto(event.getInitiator()))
                 .paid(event.getPaid())
-                .views(event.getViews() != null ? event.getViews() :  0)
+                .views(event.getViews() != null ? event.getViews() : 0)
                 .build();
     }
 

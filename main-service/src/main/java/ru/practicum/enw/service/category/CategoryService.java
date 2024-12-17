@@ -12,12 +12,12 @@ public interface CategoryService {
      * Add new category
      *
      * @param category category for adding
-     * @return CategoryEwm object
+     * @return CategoryDto object
      */
     CategoryDto add(NewCategoryDto category);
 
     /**
-     * Delete an existing catrgory
+     * Delete an existing category
      *
      * @param id identification number of category
      * @throws NotFoundCustomException
@@ -29,7 +29,7 @@ public interface CategoryService {
      *
      * @param id             identification number of category
      * @param newCategoryDto object with updating data
-     * @return updated CategoryEwm object
+     * @return updated CategoryDto object
      * @throws NotFoundCustomException
      */
     CategoryDto update(long id, NewCategoryDto newCategoryDto) throws NotFoundCustomException;
@@ -38,7 +38,7 @@ public interface CategoryService {
      * Get category by ID
      *
      * @param id identification number
-     * @return CategoryDTO objecrt
+     * @return CategoryDTO object
      */
     CategoryDto getById(long id) throws NotFoundCustomException;
 
@@ -46,8 +46,8 @@ public interface CategoryService {
      * Get category list having parameters
      *
      * @param from the number of skipping records
-     * @param sizw the number of list size
-     * @return
+     * @param size the number of list size
+     * @return List of CategoryDTO
      */
-    List<CategoryDto> getCategoryListByParams(int from, int sizw);
+    List<CategoryDto> getCategoryListByParams(int from, int size);
 }

@@ -11,7 +11,6 @@ import ru.practicum.enw.model.user.UserDto;
 import ru.practicum.enw.model.mapper.custom.UserMapper;
 import ru.practicum.enw.repo.UserRepo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -43,31 +42,11 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public List<UserDto> get(List<Integer> ids, Integer from, Integer size) {
+    public List<UserDto> get(List<Long> ids, Integer from, Integer size) {
 
-        List<UserDto> res = new ArrayList<>();
-
-        if (ids != null) {
-
-            if (from != null && size != null) {
-                res = repository.getUsersWithIdsAndLimit(ids, from, size).stream()
-                        .map(UserMapper::fromEntityToDto)
-                        .toList();
-            } else {
-                res = repository.getUsersWithIds(ids).stream()
-                        .map(UserMapper::fromEntityToDto)
-                        .toList();
-            }
-
-        } else if (from != null && size != null) {
-
-            res = repository.getUsersWithLimit(from, size).stream()
-                    .map(UserMapper::fromEntityToDto)
-                    .toList();
-
-        }
-
-        return res;
+        return repository.getUsersHavingParams(ids, from, size).stream()
+                .map(UserMapper::fromEntityToDto)
+                .toList();
     }
 
     @Override

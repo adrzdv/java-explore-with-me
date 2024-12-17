@@ -1,5 +1,6 @@
 package ru.practicum.enw.controller.internal;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class RegisteredActionsController {
 
     @PostMapping(value = "/events")
     @ResponseStatus(HttpStatus.CREATED)
-    public EventFullDto add(@RequestBody NewEventDto event,
+    public EventFullDto add(@Valid @RequestBody NewEventDto event,
                             @PathVariable long id) throws NotFoundCustomException {
 
         locationService.add(event.getLocation());
@@ -56,7 +57,7 @@ public class RegisteredActionsController {
     @ResponseStatus(HttpStatus.OK)
     public EventFullDto updateEvent(@PathVariable long id,
                                     @PathVariable long idEvent,
-                                    @RequestBody UpdateEventUserRequest event) throws NotFoundCustomException {
+                                    @Valid @RequestBody UpdateEventUserRequest event) throws NotFoundCustomException {
 
         return eventService.updateUsersEvent(id, idEvent, event);
     }
@@ -96,7 +97,7 @@ public class RegisteredActionsController {
     @ResponseStatus(HttpStatus.OK)
     public EventRequestStatusUpdateResult updateRequestsStatus(@PathVariable long id,
                                                                @PathVariable long idEvent,
-                                                               @RequestBody EventRequestStatusUpdateRequest statusUpdater)
+                                                               @Valid @RequestBody EventRequestStatusUpdateRequest statusUpdater)
             throws NotFoundCustomException {
 
         return requestService.updateRequestsStatus(id, idEvent, statusUpdater);

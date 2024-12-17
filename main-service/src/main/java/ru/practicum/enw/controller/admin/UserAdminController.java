@@ -34,8 +34,8 @@ public class UserAdminController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<UserDto> getUsers(@RequestParam(required = false, defaultValue = "0") int from,
-                                  @RequestParam(defaultValue = "0") int size,
-                                  @RequestParam(required = false) List<Integer> ids) {
+                                  @RequestParam(required = false, defaultValue = "10") int size,
+                                  @RequestParam(required = false) List<Long> ids) {
 
 
         return service.get(ids, from, size);

@@ -18,8 +18,8 @@ public class CategoriesPublicController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    List<CategoryDto> getCategories(@RequestParam(required = false) int from,
-                                    @RequestParam(defaultValue = "10") int size) {
+    List<CategoryDto> getCategories(@RequestParam(required = false, defaultValue = "0") int from,
+                                    @RequestParam(required = false, defaultValue = "10") int size) {
 
         return categoryService.getCategoryListByParams(from, size);
 

@@ -1,9 +1,14 @@
 package ru.practicum.enw.service.event;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import ru.practicum.enw.exceptions.BadRequestCustomException;
 import ru.practicum.enw.exceptions.ConflictCustomException;
 import ru.practicum.enw.exceptions.ForbiddenCustomException;
@@ -20,8 +25,11 @@ import ru.practicum.enw.model.mapper.custom.EventMapper;
 import ru.practicum.enw.repo.EventRepo;
 import ru.practicum.enw.service.location.LocationService;
 import ru.practicum.enw.service.user.UserService;
+import ru.practicum.ewm.StatsClient;
+import ru.practicum.statsdto.HitObjectDto;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static ru.practicum.enw.model.enums.EventStates.*;
@@ -35,8 +43,26 @@ public class EventServiceImpl implements EventService {
     private final CategoryRepo categoryRepo;
     private final UserService userService;
     private final LocationService locationService;
-    @Autowired
     private final EventMapperMapStruct eventMapperMapStruct;
+
+
+    private final StatsClient client;
+
+    @Autowired
+    public EventServiceImpl(EventRepo eventRepo,
+                            CategoryRepo categoryRepo,
+                            UserService userService,
+                            LocationService locationService,
+                            EventMapperMapStruct eventMapperMapStruct,
+                            RestTemplate rest,
+                            @Value("${stats-server.uri}") String statsServerString) {
+        this.eventRepo = eventRepo;
+        this.categoryRepo = categoryRepo;
+        this.userService = userService;
+        this.locationService = locationService;
+        this.eventMapperMapStruct = eventMapperMapStruct;
+        this.client = new StatsClient(statsServerString, rest);
+    }
 
     @Override
     @Transactional
@@ -47,6 +73,11 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundCustomException("User with id=" + id + " not found");
         }
 
+        if (LocalDateTime.parse(event.getEventDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                .isBefore(LocalDateTime.now())) {
+            throw new BadRequestCustomException("Date can't be in the past");
+        }
+
         Category category = categoryRepo.findById(event.getCategory())
                 .orElseThrow(() -> new NotFoundCustomException("Category is unknown"));
 
@@ -55,7 +86,8 @@ public class EventServiceImpl implements EventService {
         newEvent.setState(PENDING.name());
 
         if (newEvent.getEventDate().isBefore(LocalDateTime.now().plusHours(2L))) {
-            throw new BadRequestCustomException("Field: eventDate. Error: должно содержать дату, которая еще не наступила. Value: "
+            throw new BadRequestCustomException("Field: eventDate. Error: должно содержать дату, которая еще не " +
+                    "наступила. Value: "
                     + newEvent.getEventDate());
         }
 
@@ -115,7 +147,7 @@ public class EventServiceImpl implements EventService {
                 event.getState().equals(CANCELED.name()))) {
             throw new ForbiddenCustomException("Only pending or canceled events can be changed");
         } else if (event.getState().equals(PUBLISHED.name())) {
-            throw new BadRequestCustomException("Event mustn't be published");
+            throw new BadRequestCustomException("Event can't be published");
         }
 
         LocationEwm location;
@@ -199,6 +231,10 @@ public class EventServiceImpl implements EventService {
                                                             SortType sort, LocalDateTime rangeStart, LocalDateTime rangeEnd,
                                                             Boolean onlyAvailable, int from, int size) {
 
+        if (rangeEnd != null && (rangeEnd.isBefore(rangeStart) || (categories != null && categories.contains(0)))) {
+            throw new BadRequestCustomException("Incorrect parameters in request");
+        }
+
         String searchText;
         if (text != null) {
             searchText = text.toLowerCase();
@@ -227,7 +263,20 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventShortDto getEventForPublicById(long idEvent) throws NotFoundCustomException {
+    @Transactional
+    public EventShortDto getEventForPublicById(long idEvent, HttpServletRequest request) throws NotFoundCustomException {
+
+        client.hitUri("ewm-main-service", request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now());
+
+        ObjectMapper mapper = new ObjectMapper();
+        List<HitObjectDto> convertedBody;
+        LocalDateTime startStats = LocalDateTime.now().minusYears(1L);
+        LocalDateTime endStats = LocalDateTime.now().plusYears(1L);
+
+        ResponseEntity<Object> resp = client.getStats(startStats, endStats, List.of(request.getRequestURI()), true);
+        Object respBody = resp.getBody();
+
+        convertedBody = mapper.convertValue(respBody, mapper.getTypeFactory().constructCollectionType(List.class, HitObjectDto.class));
 
         Event event = eventRepo.findById(idEvent)
                 .orElseThrow(() -> new NotFoundCustomException("Event with id=" + idEvent + " not found"));
@@ -235,6 +284,10 @@ public class EventServiceImpl implements EventService {
         if (!event.getState().equals(PUBLISHED.name())) {
             throw new BadRequestCustomException("Event must be published");
         }
+
+        event.setViews(convertedBody.getFirst().getHits());
+
+        eventRepo.save(event);
 
         return EventMapper.toShortDto(event);
     }

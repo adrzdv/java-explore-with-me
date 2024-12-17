@@ -39,6 +39,7 @@ public class NewEventDto {
     private Boolean paid;
 
     @Min(value = 0, message = "Error: Participant limit must be positive. Value: ${validatedValue}")
+    @Positive(message = "Error: Participant limit must be positive")
     private Integer participantLimit;
     private Boolean requestModeration;
 
