@@ -42,7 +42,7 @@ public class EventMapper {
                 .title(event.getTitle())
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.toDtoFromEntity(event.getCategory()))
-                .confirmedRequests(event.getConfirmedRequests() != null ? event.getConfirmedRequests() : 0)
+                .confirmedRequests(event.getConfirmedRequests())
                 .eventDate(event.getEventDate())
                 .initiator(UserMapper.fromEntityToShortDto(event.getInitiator()))
                 .paid(event.getPaid())

@@ -41,7 +41,7 @@ public class RequestServiceImpl implements RequestService {
                 .orElseThrow(() -> new NotFoundCustomException("Event with id=" + idEvent + " not found"));
 
         if (event.getInitiator().getId() == idUser) {
-            throw new BadRequestCustomException("Initiator can't be a requestor");
+            throw new ConflictCustomException("Initiator can't be a requestor");
         }
 
         if (userRepo.findById(idUser).isEmpty()) {
@@ -53,11 +53,10 @@ public class RequestServiceImpl implements RequestService {
         }
 
         if (!event.getState().equals(EventStates.PUBLISHED.name())) {
-            throw new BadRequestCustomException("Event wasn't published");
+            throw new ConflictCustomException("Event wasn't published");
         }
         if (event.getParticipantLimit() != 0) {
-            if (event.getConfirmedRequests().intValue() == event.getParticipantLimit().intValue() ||
-                    event.getConfirmedRequests() == null) {
+            if (event.getConfirmedRequests() + 1 > event.getParticipantLimit()) {
                 throw new BadRequestCustomException("Limit of participants is over");
             }
         }

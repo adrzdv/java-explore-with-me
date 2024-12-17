@@ -99,8 +99,8 @@ public interface EventService {
      * Get an existing event by id for public controller
      *
      * @param idEvent identification number of event
-     * @return EventShortDto object
+     * @return EventFullDTO object
      * @throws NotFoundCustomException
      */
-    EventShortDto getEventForPublicById(long idEvent, HttpServletRequest request) throws NotFoundCustomException;
+    EventFullDto getEventForPublicById(long idEvent, HttpServletRequest request) throws NotFoundCustomException;
 }

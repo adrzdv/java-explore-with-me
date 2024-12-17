@@ -10,9 +10,9 @@ public class CompilationMapper {
                 .id(compilation.getId())
                 .title(compilation.getTitle())
                 .pinned(compilation.getPinned())
-                .events(compilation.getEvents().stream()
+                .events(compilation.getEvents() != null ? compilation.getEvents().stream()
                         .map(EventMapper::toShortDto)
-                        .toList())
+                        .toList() : null)
                 .build();
     }
 }

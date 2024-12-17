@@ -32,10 +32,12 @@ public class CompilationServiceImp implements CompilationService {
 
         List<Event> events = new ArrayList<>();
 
-        if (!newCompilation.getEvents().isEmpty()) {
-            events = eventRepo.findByIdIn(newCompilation.getEvents());
-            if (events.isEmpty()) {
-                throw new ConflictCustomException("One or all events in list not found");
+        if (newCompilation.getEvents() != null) {
+            if (!newCompilation.getEvents().isEmpty()) {
+                events = eventRepo.findByIdIn(newCompilation.getEvents());
+                if (events.isEmpty()) {
+                    throw new ConflictCustomException("One or all events in list not found");
+                }
             }
         }
 

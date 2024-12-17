@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.enw.exceptions.NotFoundCustomException;
 import ru.practicum.enw.model.enums.SortType;
+import ru.practicum.enw.model.event.EventFullDto;
 import ru.practicum.enw.model.event.EventShortDto;
 import ru.practicum.enw.service.event.EventService;
 
@@ -42,7 +43,7 @@ public class EventPublicController {
 
     @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public EventShortDto getEvent(@PathVariable long id, HttpServletRequest request) throws NotFoundCustomException {
+    public EventFullDto getEvent(@PathVariable long id, HttpServletRequest request) throws NotFoundCustomException {
 
         return eventService.getEventForPublicById(id, request);
     }

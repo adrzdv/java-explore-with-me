@@ -3,6 +3,7 @@ package ru.practicum.enw.service.category;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.enw.exceptions.ConflictCustomException;
 import ru.practicum.enw.exceptions.NotFoundCustomException;
 import ru.practicum.enw.model.category.CategoryDto;
 import ru.practicum.enw.model.category.NewCategoryDto;
@@ -38,7 +39,7 @@ public class CategoryServiceImp implements CategoryService {
         }
 
         if (!eventRepo.findByCategoryId(id).isEmpty()) {
-            throw new NotFoundCustomException("Category with id=" + id + " not available");
+            throw new ConflictCustomException("Category with id=" + id + " not available");
         }
 
         repo.deleteById(id);

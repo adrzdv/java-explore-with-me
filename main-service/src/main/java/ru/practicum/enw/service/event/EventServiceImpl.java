@@ -152,12 +152,14 @@ public class EventServiceImpl implements EventService {
 
         LocationEwm location;
 
-        if (!event.getLocation().equals(updEvent.getLocation())) {
-            location = locationService.add(updEvent.getLocation());
-            updEvent.setLocation(location);
-        } else {
-            updEvent.setLocation(event.getLocation());
-            eventMapperMapStruct.updateFullEventDtoFromNewEventDto(updEvent, event);
+        if (updEvent.getLocation() != null) {
+            if (!event.getLocation().equals(updEvent.getLocation())) {
+                location = locationService.add(updEvent.getLocation());
+                updEvent.setLocation(location);
+            } else {
+                updEvent.setLocation(event.getLocation());
+                eventMapperMapStruct.updateFullEventDtoFromNewEventDto(updEvent, event);
+            }
         }
 
         if (updEvent.getStateAction().equals(CANCEL_REVIEW.name())) {
@@ -264,7 +266,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public EventShortDto getEventForPublicById(long idEvent, HttpServletRequest request) throws NotFoundCustomException {
+    public EventFullDto getEventForPublicById(long idEvent, HttpServletRequest request) throws NotFoundCustomException {
 
         client.hitUri("ewm-main-service", request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now());
 
@@ -289,7 +291,7 @@ public class EventServiceImpl implements EventService {
 
         eventRepo.save(event);
 
-        return EventMapper.toShortDto(event);
+        return EventMapper.fromEntityToEventFullDto(event);
     }
 
 
