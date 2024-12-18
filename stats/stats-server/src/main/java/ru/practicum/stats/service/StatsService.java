@@ -1,7 +1,7 @@
 package ru.practicum.stats.service;
 
 import ru.practicum.statsdto.HitObject;
-import ru.practicum.statsdto.HitObjectProjection;
+import ru.practicum.statsdto.HitObjectDto;
 import ru.practicum.statsdto.ParamObject;
 
 import java.util.List;
@@ -22,5 +22,5 @@ public interface StatsService {
      * @param params Object of request parameters
      * @return List of HitObjectProjection
      */
-    List<HitObjectProjection> viewStats(ParamObject params);
+    List<HitObjectDto> viewStats(ParamObject params);
 }
