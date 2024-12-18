@@ -70,11 +70,11 @@ public class RequestServiceImpl implements RequestService {
         if (event.getRequestModeration() != null) {
             if (event.getParticipantLimit() == 0) {
                 request.setStatus(RequestStatus.CONFIRMED.name());
+                event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+                eventRepo.save(event);
             } else {
-                request.setStatus(RequestStatus.CONFIRMED.name());
+                request.setStatus(RequestStatus.PENDING.name());
             }
-            event.setConfirmedRequests(event.getConfirmedRequests() + 1);
-            eventRepo.save(event);
         } else {
             request.setStatus(RequestStatus.PENDING.name());
         }

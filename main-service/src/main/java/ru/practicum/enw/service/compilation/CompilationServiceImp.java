@@ -44,7 +44,7 @@ public class CompilationServiceImp implements CompilationService {
         Compilation compilation = Compilation.builder()
                 .title(newCompilation.getTitle())
                 .pinned(newCompilation.getPinned() != null ? newCompilation.getPinned() : false)
-                .events(events.isEmpty() ? null : events)
+                .events(events.isEmpty() ? new ArrayList<>() : events)
                 .build();
 
         return CompilationMapper.fromEntityToDto(compilationRepo.save(compilation));
