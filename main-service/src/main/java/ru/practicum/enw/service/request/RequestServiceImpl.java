@@ -67,13 +67,13 @@ public class RequestServiceImpl implements RequestService {
         request.setEvent(event.getId());
         request.setCreated(LocalDateTime.now());
 
-        if (!event.getRequestModeration()) {
+        if (event.getRequestModeration() != null) {
             if (event.getParticipantLimit() == 0) {
                 request.setStatus(RequestStatus.CONFIRMED.name());
             } else {
                 request.setStatus(RequestStatus.CONFIRMED.name());
-                event.setConfirmedRequests(event.getConfirmedRequests() + 1);
             }
+            event.setConfirmedRequests(event.getConfirmedRequests() + 1);
             eventRepo.save(event);
         } else {
             request.setStatus(RequestStatus.PENDING.name());

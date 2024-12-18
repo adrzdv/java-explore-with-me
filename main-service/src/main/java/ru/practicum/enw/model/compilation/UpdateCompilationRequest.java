@@ -1,7 +1,6 @@
 package ru.practicum.enw.model.compilation;
 
 import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateCompilationRequest {
-    @NotBlank(message = "Error: must not be blank. Value: ${validateValue}")
+    @Nullable
     @Size(min = 1, max = 50, message = "Error: Title length must be between 1 and 50 characters")
     private String title;
     @Nullable
