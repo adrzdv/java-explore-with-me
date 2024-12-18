@@ -49,25 +49,27 @@ public class RequestServiceImpl implements RequestService {
         }
 
         if (requestRepo.findByEventAndRequester(idEvent, idUser) != null) {
-            throw new ConflictCustomException("User already have made request on the event");
+            throw new ConflictCustomException("User already made a request on the event");
         }
 
         if (!event.getState().equals(EventStates.PUBLISHED.name())) {
             throw new ConflictCustomException("Event wasn't published");
         }
+        ParticipationRequest request = new ParticipationRequest();
         if (event.getParticipantLimit() != 0) {
             if (event.getConfirmedRequests() + 1 > event.getParticipantLimit()) {
+                request.setStatus(RequestStatus.REJECTED.name());
+                requestRepo.save(request);
                 throw new ConflictCustomException("Limit of participants is over");
             }
         }
-
-        ParticipationRequest request = new ParticipationRequest();
 
         request.setRequester(idUser);
         request.setEvent(event.getId());
         request.setCreated(LocalDateTime.now());
 
-        if (event.getRequestModeration() != null) {
+
+        if (event.getRequestModeration()) {
             if (event.getParticipantLimit() == 0) {
                 request.setStatus(RequestStatus.CONFIRMED.name());
                 event.setConfirmedRequests(event.getConfirmedRequests() + 1);
@@ -76,7 +78,9 @@ public class RequestServiceImpl implements RequestService {
                 request.setStatus(RequestStatus.PENDING.name());
             }
         } else {
-            request.setStatus(RequestStatus.PENDING.name());
+            request.setStatus(RequestStatus.CONFIRMED.name());
+            event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+            eventRepo.save(event);
         }
 
         return RequestMapper.fromEntityToDto(requestRepo.save(request));
