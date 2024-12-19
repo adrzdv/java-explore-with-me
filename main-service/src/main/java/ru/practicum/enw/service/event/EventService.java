@@ -103,4 +103,6 @@ public interface EventService {
      * @throws NotFoundCustomException
      */
     EventFullDto getEventForPublicById(long idEvent, HttpServletRequest request) throws NotFoundCustomException;
+
+
 }

@@ -39,9 +39,6 @@ public class StatsServiceImp implements StatsService {
 
         LocalDateTime start = LocalDateTime.parse(decodedStart, formatter);
         LocalDateTime end = LocalDateTime.parse(decodedEnd, formatter);
-//        LocalDateTime start = LocalDateTime.parse(params.getStart(), formatter);
-//        LocalDateTime end = LocalDateTime.parse(params.getEnd(), formatter);
-        List<HitObjectDto> res;
         List<HitObjectProjection> temp;
 
         if (params.getUris() != null && params.getUnique() == null) {
@@ -49,7 +46,6 @@ public class StatsServiceImp implements StatsService {
             temp = repository.getStatsWithUries(params.getUris(), start, end);
             return temp.stream().map(StatsServiceImp::fromProjectionToDto).toList();
 
-            //return repository.getStatsWithUries(params.getUris(), start, end);
 
         } else if (params.getUnique() != null && params.getUris() == null) {
 
@@ -58,13 +54,11 @@ public class StatsServiceImp implements StatsService {
                 temp = repository.getUniqueStats(start, end);
                 return temp.stream().map(StatsServiceImp::fromProjectionToDto).toList();
 
-                //return repository.getUniqueStats(start, end);
             } else {
 
                 temp = repository.getStats(start, end);
                 return temp.stream().map(StatsServiceImp::fromProjectionToDto).toList();
 
-                //return repository.getStats(start, end);
             }
 
         } else if (params.getUris() != null) {
@@ -74,13 +68,11 @@ public class StatsServiceImp implements StatsService {
                 temp = repository.getUniqueStatsWithUries(params.getUris(), start, end);
                 return temp.stream().map(StatsServiceImp::fromProjectionToDto).toList();
 
-                //return repository.getUniqueStatsWithUries(params.getUris(), start, end);
             } else {
 
                 temp = repository.getStatsWithUries(params.getUris(), start, end);
                 return temp.stream().map(StatsServiceImp::fromProjectionToDto).toList();
 
-                //return repository.getStatsWithUries(params.getUris(), start, end);
             }
 
         }
@@ -88,7 +80,6 @@ public class StatsServiceImp implements StatsService {
         temp = repository.getStats(start, end);
         return temp.stream().map(StatsServiceImp::fromProjectionToDto).toList();
 
-        //return repository.getStats(start, end);
     }
 
     private static HitObjectDto fromProjectionToDto(HitObjectProjection projection) {

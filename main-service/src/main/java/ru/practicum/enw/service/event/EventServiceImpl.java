@@ -193,6 +193,7 @@ public class EventServiceImpl implements EventService {
 
         Event eventOld = eventRepo.findById(id)
                 .orElseThrow(() -> new NotFoundCustomException("Event with id=" + id + " not found"));
+        LocationEwm location;
 
         if (event == null) {
             return EventMapper.fromEntityToEventFullDto(eventOld);
@@ -224,6 +225,16 @@ public class EventServiceImpl implements EventService {
                 throw new ForbiddenCustomException("Event is not in PENDING state or already had PUBLISHED");
             }
         }
+
+        if (event.getLocation() != null) {
+            if (!event.getLocation().equals(eventOld.getLocation())) {
+                location = locationService.add(event.getLocation());
+                event.setLocation(location);
+            } else {
+                event.setLocation(event.getLocation());
+            }
+        }
+
         Category category;
         if (event.getCategory() != null) {
             category = categoryRepo.findById(event.getCategory())
@@ -323,6 +334,5 @@ public class EventServiceImpl implements EventService {
 
         return EventMapper.fromEntityToEventFullDto(event);
     }
-
 
 }
