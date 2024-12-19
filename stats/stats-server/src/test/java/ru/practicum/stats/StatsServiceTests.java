@@ -3,6 +3,7 @@ package ru.practicum.stats;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
+import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.practicum.statsdto.HitObject;
 import ru.practicum.stats.service.StatsService;
-import ru.practicum.statsdto.HitObjectProjection;
+import ru.practicum.statsdto.HitObjectDto;
 import ru.practicum.statsdto.ParamObject;
 
 import java.time.LocalDateTime;
@@ -80,20 +81,20 @@ class StatsServiceTests {
     }
 
     @Test
-    void getTestStats() {
+    void getTestStats() throws BadRequestException {
 
         HitObject dbObjOne = service.hit(objOne);
         HitObject dbObjTwo = service.hit(objTwo);
 
-        String start = "2024-01-01 00:00:00";
-        String end = "2025-12-31 00:00:00";
+        String start = "2024-01-01T00:00:00";
+        String end = "2025-12-31T00:00:00";
 
         ParamObject params = ParamObject.builder()
                 .start(start)
                 .end(end)
                 .build();
 
-        List<HitObjectProjection> res = service.viewStats(params);
+        List<HitObjectDto> res = service.viewStats(params);
 
         assertThat(res.size(), equalTo(2));
 

@@ -9,7 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.statsdto.HitObject;
-import ru.practicum.statsdto.HitObjectProjection;
+import ru.practicum.statsdto.HitObjectDto;
 import ru.practicum.stats.controller.StatsController;
 import ru.practicum.stats.service.StatsService;
 
@@ -63,22 +63,7 @@ public class StatsControllerTests {
     @Test
     void getStats() throws Exception {
 
-        HitObjectProjection proj = new HitObjectProjection() {
-            @Override
-            public String getApp() {
-                return "test-app";
-            }
-
-            @Override
-            public String getUri() {
-                return "test/uri";
-            }
-
-            @Override
-            public int getHits() {
-                return 4;
-            }
-        };
+        HitObjectDto proj = new HitObjectDto("test-app", "test/uri", 4);
 
         when(service.viewStats(any())).thenReturn(List.of(proj));
 
