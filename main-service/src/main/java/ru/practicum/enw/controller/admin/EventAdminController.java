@@ -41,6 +41,5 @@ public class EventAdminController {
                                         @Valid @RequestBody(required = false) UpdateEventAdminRequest event) throws NotFoundCustomException {
 
         return eventService.updateEventByAdmin(id, event);
-
     }
 }
