@@ -1,6 +1,7 @@
 package ru.practicum.stats.service;
 
 import lombok.AllArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.statsdto.HitObject;
@@ -30,15 +31,32 @@ public class StatsServiceImp implements StatsService {
     }
 
     @Override
-    public List<HitObjectDto> viewStats(ParamObject params) {
+    public List<HitObjectDto> viewStats(ParamObject params) throws BadRequestException {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        DateTimeFormatter formatterTwo = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        if (params.getStart() == null || params.getEnd() == null) {
+            throw new BadRequestException("Start and date required");
+        }
 
         String decodedStart = URLDecoder.decode(params.getStart(), StandardCharsets.UTF_8);
         String decodedEnd = URLDecoder.decode(params.getEnd(), StandardCharsets.UTF_8);
+        LocalDateTime start;
+        LocalDateTime end;
 
-        LocalDateTime start = LocalDateTime.parse(decodedStart, formatter);
-        LocalDateTime end = LocalDateTime.parse(decodedEnd, formatter);
+        if (decodedStart.contains("T") && decodedEnd.contains("T")) {
+            start = LocalDateTime.parse(decodedStart, formatter);
+            end = LocalDateTime.parse(decodedEnd, formatter);
+        } else {
+            start = LocalDateTime.parse(decodedStart, formatterTwo);
+            end = LocalDateTime.parse(decodedEnd, formatterTwo);
+        }
+
+        if (start.isAfter(end)) {
+            throw new BadRequestException("Start can't be after end");
+        }
+
         List<HitObjectProjection> temp;
 
         if (params.getUris() != null && params.getUnique() == null) {

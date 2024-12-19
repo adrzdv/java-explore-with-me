@@ -272,7 +272,9 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventShortDto> getEventsForPublicWithParams(String text, List<Integer> categories, Boolean paid,
                                                             SortType sort, LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                                            Boolean onlyAvailable, int from, int size) {
+                                                            Boolean onlyAvailable, int from, int size, HttpServletRequest request) {
+
+        client.hitUri("ewm-main-service", request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now());
 
         if (rangeEnd != null && (rangeEnd.isBefore(rangeStart) || (categories != null && categories.contains(0)))) {
             throw new BadRequestCustomException("Incorrect parameters in request");

@@ -3,6 +3,7 @@ package ru.practicum.stats;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
+import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +81,7 @@ class StatsServiceTests {
     }
 
     @Test
-    void getTestStats() {
+    void getTestStats() throws BadRequestException {
 
         HitObject dbObjOne = service.hit(objOne);
         HitObject dbObjTwo = service.hit(objTwo);

@@ -37,7 +37,7 @@ public class EventPublicController {
                                          HttpServletRequest request) {
 
         return eventService.getEventsForPublicWithParams(text, categories, paid, sort, rangeStart,
-                rangeEnd, onlyAvailable, from, size);
+                rangeEnd, onlyAvailable, from, size, request);
 
     }
 

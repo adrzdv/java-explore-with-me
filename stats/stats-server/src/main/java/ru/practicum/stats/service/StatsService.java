@@ -1,5 +1,6 @@
 package ru.practicum.stats.service;
 
+import org.apache.coyote.BadRequestException;
 import ru.practicum.statsdto.HitObject;
 import ru.practicum.statsdto.HitObjectDto;
 import ru.practicum.statsdto.ParamObject;
@@ -22,5 +23,5 @@ public interface StatsService {
      * @param params Object of request parameters
      * @return List of HitObjectProjection
      */
-    List<HitObjectDto> viewStats(ParamObject params);
+    List<HitObjectDto> viewStats(ParamObject params) throws BadRequestException;
 }

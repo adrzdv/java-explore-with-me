@@ -89,16 +89,18 @@ public interface EventService {
      * @param onlyAvailable filtering for only available events
      * @param from          the number of skipped records
      * @param size          the number of result list size
+     * @param request       HttpServletRequest
      * @return List of FullShirtDto objects
      */
     List<EventShortDto> getEventsForPublicWithParams(String text, List<Integer> categories, Boolean paid,
                                                      SortType sort, LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                                     Boolean onlyAvailable, int from, int size);
+                                                     Boolean onlyAvailable, int from, int size, HttpServletRequest request);
 
     /**
      * Get an existing event by id for public controller
      *
      * @param idEvent identification number of event
+     * @param request HttServletRequest
      * @return EventFullDTO object
      * @throws NotFoundCustomException
      */
