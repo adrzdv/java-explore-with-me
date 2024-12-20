@@ -2,8 +2,6 @@ package ru.practicum.enw;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 public class MainService {
@@ -12,8 +10,4 @@ public class MainService {
         SpringApplication.run(MainService.class, args);
     }
 
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
 }

@@ -12,10 +12,10 @@ import lombok.*;
 @Builder
 public class CategoryDto {
 
-    long id;
+    private long id;
     @NotBlank(message = "Error: must not be blank. Value: ${validatedValue}")
     @Size(message = "Error: length must be between 1 and 50 characters. Value: ${validatedValue}", min = 1, max = 50)
-    String name;
+    private String name;
 
 
 }
