@@ -5,13 +5,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.enw.exceptions.NotFoundCustomException;
-import ru.practicum.enw.model.event.EventFullDto;
-import ru.practicum.enw.model.event.EventShortDto;
-import ru.practicum.enw.model.event.NewEventDto;
-import ru.practicum.enw.model.event.UpdateEventUserRequest;
+import ru.practicum.enw.model.comment.CommentDto;
+import ru.practicum.enw.model.comment.NewCommentDto;
+import ru.practicum.enw.model.event.*;
 import ru.practicum.enw.model.request.EventRequestStatusUpdateRequest;
 import ru.practicum.enw.model.request.EventRequestStatusUpdateResult;
 import ru.practicum.enw.model.request.ParticipationRequestDto;
+import ru.practicum.enw.service.comment.CommentService;
 import ru.practicum.enw.service.event.EventService;
 import ru.practicum.enw.service.location.LocationService;
 import ru.practicum.enw.service.request.RequestService;
@@ -26,6 +26,7 @@ public class RegisteredActionsController {
     private final EventService eventService;
     private final LocationService locationService;
     private final RequestService requestService;
+    private final CommentService commentService;
 
     @PostMapping(value = "/events")
     @ResponseStatus(HttpStatus.CREATED)
@@ -101,6 +102,48 @@ public class RegisteredActionsController {
             throws NotFoundCustomException {
 
         return requestService.updateRequestsStatus(id, idEvent, statusUpdater);
+    }
+
+    @PostMapping(value = "/events/{idEvent}/comment")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CommentDto postComment(@PathVariable long id,
+                                  @PathVariable long idEvent,
+                                  @Valid @RequestBody NewCommentDto comment) throws NotFoundCustomException {
+
+        return commentService.addComment(comment, idEvent, id);
+
+    }
+
+    @PatchMapping(value = "/events/{idEvent}/comment/{idComment}")
+    @ResponseStatus(HttpStatus.OK)
+    public CommentDto updateComment(@PathVariable long id,
+                                    @PathVariable long idEvent,
+                                    @PathVariable long idComment,
+                                    @Valid @RequestBody NewCommentDto comment) throws NotFoundCustomException {
+
+        return commentService.updateComment(comment, idEvent, id, idComment);
+
+    }
+
+    @DeleteMapping(value = "/events/{idEvent}/comment/{idComment}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteComment(@PathVariable long id,
+                              @PathVariable long idEvent,
+                              @PathVariable long idComment) throws NotFoundCustomException {
+
+        commentService.deleteCommentByAuthor(id, idEvent, idComment);
+
+    }
+
+    @GetMapping(value = "/events/{idEvent}/comment")
+    @ResponseStatus(HttpStatus.OK)
+    public EventShortWithCommentDto getUsersEventWithComments(@PathVariable long id,
+                                                              @PathVariable long idEvent,
+                                                              @RequestParam(required = false, defaultValue = "10") int size,
+                                                              @RequestParam(required = false, defaultValue = "0") int from) throws NotFoundCustomException {
+
+        return commentService.getEventComments(idEvent, id, size, from);
+
     }
 
 }

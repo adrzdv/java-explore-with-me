@@ -5,6 +5,7 @@ import ru.practicum.enw.model.entity.Category;
 import ru.practicum.enw.model.entity.Event;
 import ru.practicum.enw.model.event.EventFullDto;
 import ru.practicum.enw.model.event.EventShortDto;
+import ru.practicum.enw.model.event.EventShortWithCommentDto;
 import ru.practicum.enw.model.event.NewEventDto;
 import ru.practicum.enw.model.user.UserDto;
 
@@ -91,6 +92,17 @@ public class EventMapper {
                 .publishedOn(eventFullDto.getPublishedOn())
                 .state(eventFullDto.getState())
                 .views(eventFullDto.getViews())
+                .build();
+    }
+
+    public static EventShortWithCommentDto fromEntityToDtoWithComments(Event event) {
+
+        return EventShortWithCommentDto.builder()
+                .id(event.getId())
+                .title(event.getTitle())
+                .annotation(event.getAnnotation())
+                .category(CategoryMapper.toDtoFromEntity(event.getCategory()))
+                .eventDate(event.getEventDate())
                 .build();
     }
 

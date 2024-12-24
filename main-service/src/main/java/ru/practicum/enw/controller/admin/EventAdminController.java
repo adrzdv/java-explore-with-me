@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.enw.exceptions.NotFoundCustomException;
 import ru.practicum.enw.model.event.EventFullDto;
 import ru.practicum.enw.model.event.UpdateEventAdminRequest;
+import ru.practicum.enw.service.comment.CommentService;
 import ru.practicum.enw.service.event.EventService;
 
 @RestController
@@ -19,6 +20,7 @@ import ru.practicum.enw.service.event.EventService;
 public class EventAdminController {
 
     private final EventService eventService;
+    private final CommentService commentService;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -41,5 +43,12 @@ public class EventAdminController {
                                         @Valid @RequestBody(required = false) UpdateEventAdminRequest event) throws NotFoundCustomException {
 
         return eventService.updateEventByAdmin(id, event);
+    }
+
+    @DeleteMapping(value = "/comment/{idComment}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCommentByAdmin(@PathVariable long idComment) throws NotFoundCustomException {
+
+        commentService.deleteCommentByAdmin(idComment);
     }
 }
