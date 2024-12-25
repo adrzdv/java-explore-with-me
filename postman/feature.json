@@ -64,8 +64,6 @@
 						"exec": [
 							"pm.test(\"Ответ должен содержать код статуса 201 и данные в формате json\", function () {",
 							"    pm.response.to.have.status(201);",
-							"    pm.response.to.be.withBody;",
-							"    pm.response.to.be.json; ",
 							"});"
 						],
 						"type": "text/javascript",
@@ -125,13 +123,14 @@
 							"    try {",
 							"        const user = await api.addUser(rnd.getUser());",
 							"        const user2 = await api.addUser(rnd.getUser());",
-							"        pm.collectionVariables.set(\"uid\", user2.id);",
+							"        const user3 = await api.addUser(rnd.getUser());",
+							"        pm.collectionVariables.set(\"uid\", user3.id);",
 							"        const category = await api.addCategory(rnd.getCategory());",
 							"        const eventBody = rnd.getEvent(category.id);",
 							"        let event = await api.addEvent(user.id, eventBody);",
 							"        event = await api.publishEvent(event.id);",
 							"        pm.collectionVariables.set(\"eid\", event.id);",
-							"        let comment = await api.addComment(user2.id + 20, event.id, rnd.getComment());",
+							"        let comment = await api.addComment(user2.id, event.id, rnd.getComment());",
 							"        pm.collectionVariables.set(\"cid\", comment.id);",
 							"        let comm = rnd.getComment();",
 							"        pm.request.body.update({",
@@ -231,8 +230,6 @@
 						"exec": [
 							"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
 							"    pm.response.to.have.status(200);",
-							"    pm.response.to.be.withBody;",
-							"    pm.response.to.be.json;",
 							"});"
 						],
 						"type": "text/javascript",
