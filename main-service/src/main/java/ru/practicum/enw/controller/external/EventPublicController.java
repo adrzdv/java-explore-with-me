@@ -9,6 +9,8 @@ import ru.practicum.enw.exceptions.NotFoundCustomException;
 import ru.practicum.enw.model.enums.SortType;
 import ru.practicum.enw.model.event.EventFullDto;
 import ru.practicum.enw.model.event.EventShortDto;
+import ru.practicum.enw.model.event.EventShortWithCommentDto;
+import ru.practicum.enw.service.comment.CommentService;
 import ru.practicum.enw.service.event.EventService;
 
 import java.time.LocalDateTime;
@@ -20,6 +22,7 @@ import java.util.List;
 public class EventPublicController {
 
     private final EventService eventService;
+    private final CommentService commentService;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -46,5 +49,14 @@ public class EventPublicController {
     public EventFullDto getEvent(@PathVariable long id, HttpServletRequest request) throws NotFoundCustomException {
 
         return eventService.getEventForPublicById(id, request);
+    }
+
+    @GetMapping(value = "/{id}/comment")
+    @ResponseStatus(HttpStatus.OK)
+    public EventShortWithCommentDto getEventWithComments(@PathVariable long id,
+                                                         @RequestParam(required = false, defaultValue = "10") int size,
+                                                         @RequestParam(required = false, defaultValue = "0") int from) throws NotFoundCustomException {
+
+        return commentService.getEventCommentsForPublic(id, size, from);
     }
 }
