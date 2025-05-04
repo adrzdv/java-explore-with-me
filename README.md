@@ -1,4 +1,9 @@
 # java-explore-with-me
-Template repository for ExploreWithMe project.
+ExploreWithMe project.
+
+Приложение состоит из двух модулей: сервис статистики и основной сервис. 
+API основного сервис разделено на три части: публичная, которая доступна любому пользователю, закрытая только для авторизованных пользователей и административная для администратора сервиса. 
+Сервис статистики собирает статистику о количеств обращений пользователей к спискам событий и количестве запросов к подробной информации о событии.
+Стек: Java 21, Maven, Docker, Spring Boot, Spring Data, PostgreSQL, Hibernate ORM, Mockito, JUnit, Postman
 
 https://github.com/adrzdv/java-explore-with-me/pull/3
